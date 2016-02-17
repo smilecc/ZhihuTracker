@@ -1,33 +1,52 @@
-
+/*
+<button class="down pressed" title="在追踪器内追踪本回答更新">
+追踪
+</button>
+*/
 window.onload=function(){
-	// var head = document.getElementsByTagName('head')[0];
-	// chrome.storage.sync.get(["info","baozi","redname"],function(date){
-	// console.log(date);
-	// if(!date.info)
-	// {
-	// 	var link = document.createElement('link');
-	//     link.href = "http://canapi-css.stor.sinaapp.com/info.css";
-	//     link.rel = 'stylesheet';
-	//     link.type = 'text/css';
-	//     head.appendChild(link);
-	// }
-	
-	// if(!date.baozi)
-	// {
-	// 	var link2 = document.createElement('link');
-	// 	link2.href = "http://canapi-css.stor.sinaapp.com/baozi.css";
-	// 	link2.rel = 'stylesheet';
-	//     link2.type = 'text/css';
-	// 	head.appendChild(link2);
-	// }
-	
-	// if(!date.redname)	
-	// {	
-	// 	var link3 = document.createElement('link');
-	// 	link3.href = "http://canapi-css.stor.sinaapp.com/redname.css";
-	// 	link3.rel = 'stylesheet';
-	//     link3.type = 'text/css';
-	// 	head.appendChild(link3);
-	// }
-	// })
+	//$('.zm-votebar').append('<button class="down pressed" title="在追踪器内追踪本回答更新">追踪</button>');
+	var url = window.location.pathname;
+	var view_mode = 0;
+	var question_id;
+	var answer_id;
+	var people;
+
+	// 获取用户信息
+	var user_jobj = JSON.parse($('[data-name=ga_vars]').text())
+	var user_hash = user_jobj['user_hash'];
+
+	// 初始化信息
+	var reg = new RegExp("question/([0-9]+)");
+	var question_reg = reg.exec(url);
+	if(null != question_reg){
+		question_id = question_reg[1];
+		view_mode = 1;
+	}
+
+
+	// 追加按钮
+	var votelist = document.getElementsByClassName('zm-votebar');//.appendChild(btn_tracker);
+	for (var i = votelist.length - 1; i >= 0; i--) {
+		var btn_tracker = document.createElement('button');
+		btn_tracker.setAttribute('class','tracker');
+		btn_tracker.setAttribute('title','在追踪器内追踪本回答更新');
+		if(view_mode == 0){
+			question_id = $(votelist[1]).parent().parent().parent().parent().children('[itemprop=question-url-token]').attr('content');
+		}
+
+		btn_tracker.setAttribute('answer_id',$(votelist[1]).parent().attr('data-atoken'));
+		btn_tracker.setAttribute('question_id',question_id);
+		btn_tracker.innerHTML = '追踪';
+		votelist[i].appendChild(btn_tracker);
+	};
+
+	// 绑定事件
+	$('.tracker').click(function(){
+		if($(this).hasClass('pressed')){
+			$(this).removeClass('pressed');
+		} else {
+			$(this).addClass('pressed');
+		}
+		
+	});
 }
