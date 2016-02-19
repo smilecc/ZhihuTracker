@@ -13,7 +13,21 @@ class Db
 
 	function __construct()
 	{
-		$this->db = new PDO("mysql:host=db4free.net;dbname=zhihutracker","zhihutracker","123456");
+		if(isset($_SERVER['HTTP_APPNAME'])){
+			$host = SAE_MYSQL_HOST_M.':'.SAE_MYSQL_PORT;
+			$dbname = $_SERVER['HTTP_APPNAME'];
+			$dbuser = SAE_MYSQL_USER;
+			$dbpwd = SAE_MYSQL_PASS;
+		}else{
+			$host = "db4free.net";
+			$dbname = "zhihutracker";
+			$dbuser = "zhihutracker";
+			$dbpwd = '123456';
+		}
+
+		$con_str = sprintf("mysql:host=%s;dbname=%s",$host, $dbname);
+
+		$this->db = new PDO("",$dbuser, $dbpwd);
 		$this->db->exec("SET NAMES 'utf8';");
 	}
 }
@@ -26,7 +40,7 @@ class User extends Db
 	}
 
 	public function GetUserByHash($uhash){
-		$stmt = $this->db->prepare('SELECT id FROM user WHERE hash = :hash');
+		$stmt = $this->db->prepare('SELECT id FROM zh_user WHERE hash = :hash');
 		$stmt->execute(array('hash' => $uhash));
 		return $stmt->fetch();
 	}
@@ -37,7 +51,7 @@ class User extends Db
 		}
 
 	public function AddUser($uhash){
-		$insert = $this->db->prepare('INSERT INTO user(hash) VALUES(:hash)');
+		$insert = $this->db->prepare('INSERT INTO zh_user(hash) VALUES(:hash)');
 		$insert->bindParam(':hash', $uhash);
 		return $insert->execute();
 	}
@@ -51,7 +65,7 @@ class Track extends Db
 	}
 
 	public function AddTrack($uid,$question_id,$answer_id){
-		$insert = $this->db->prepare('INSERT INTO track(userid,questionid,answerid) VALUES(:uid,:qid,:aid)');
+		$insert = $this->db->prepare('INSERT INTO zh_track(userid,questionid,answerid) VALUES(:uid,:qid,:aid)');
 		$insert->bindParam(':qid', $question_id);
 		$insert->bindParam(':aid', $answer_id);
 		$insert->bindParam(':uid', $uid);
@@ -59,13 +73,13 @@ class Track extends Db
 	}
 
 	public function GetAll($uid){
-		$stmt = $this->db->prepare('SELECT * FROM track WHERE userid = :uid');
+		$stmt = $this->db->prepare('SELECT * FROM zh_track WHERE userid = :uid');
 		$stmt->execute(array('uid' => $uid));
 		return $stmt->fetchAll();
 	}
 
 	public function UpdateTime($uid){
-		$stmt = $this->db->prepare('UPDATE track SET num=num+1 WHERE userid = :uid');
+		$stmt = $this->db->prepare('UPDATE zh_track SET num=num+1 WHERE userid = :uid');
 		$stmt->execute(array('uid' => $uid));
 	}
 }
