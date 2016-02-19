@@ -49,6 +49,16 @@ window.onload=function(){
 		});
 	};
 
-	chrome.runtime.sendMessage({dom: d}); 
+	chrome.runtime.sendMessage(
+			{
+				type: 'gettrack',
+				uhash: '',
+				aid: '',
+				qid: ''
+			},
+			function(response){
+				console.log(response.data);
+				SetPage();
+			}); 
 	//TrackOp('gettrack');
 }

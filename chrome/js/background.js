@@ -16,6 +16,20 @@
 // 	});
 // };
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendRequest) {
-    alert(request.dom);
+chrome.runtime.onMessage.addListener(  
+function(request, sender, sendResponse) {
+	$.ajax({
+		url:"https://3.candemo.applinzi.com/operator.php",
+		async:true,
+		data:{
+			type:request.type,
+			uhash:request.uhash,
+			qid:request.qid,
+			aid:request.aid
+		},
+		success:function(res){
+			console.log(res);
+			sendResponse({data: res});
+		}
+	});
 });

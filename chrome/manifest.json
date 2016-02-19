@@ -3,7 +3,7 @@
   "name": "知乎追踪器",
   "description": "你们给我搞的这个追踪器啊，亦可赛艇",
   "version": "1.0",
-  "background": { "scripts": ["./js/background.js"] },
+  "background": { "scripts": ["jquery.min.js","./js/background.js"] },
   "content_scripts": [{
      "matches": ["*://www.zhihu.com/*"], 
      "js": ["jquery.min.js","operation.js"],
