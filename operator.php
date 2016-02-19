@@ -2,33 +2,39 @@
 header("Content-type: text/html; charset=utf-8");
 require_once('function.php');
 
-$db = DbConn();
+$user = new User();
+$track = new Track();
+
+// 所有p开头意为param
+$pHash = @I('uhash');
+$uid = $user->GetUserId($pHash);
+
+if($uid == null){
+	$user->AddUser($pHash);
+}
+
 $res_json = array('status' => false);
 
-if (I('uhash') == null) {
-	$res_json['info'] = 'uhash为空';
-	echo json_encode($res_json);
-	return;
-}
-
-$uhash = I('uhash');
-$stmt = $db->prepare('SELECT * FROM user WHERE hash = :hash');
-$stmt->execute(array('hash' => $uhash));
-$row = $stmt->fetch();
-
-if($row == null){
-	$insert = $db->prepare('INSERT INTO user(hash) VALUES(:hash)');
-	$insert->bindParam(':hash', $uhash);
-	$insert->execute();
-}
-
-switch (I('type')) {
+// 分发
+switch (@I('type')) {
+	// 增加追踪
 	case 'addtrack':
-		
+		$pQuestionid = @I('qid');
+		$pAnswerid = @I('aid');
+
+		if($pAnswerid == null || $pQuestionid == null){
+			$res_json['info'] = 'Aid or Qid 未命中';
+			break;
+		}
+
+		if($track->AddTrack($uid,$pQuestionid,$pAnswerid) > 0){
+			$res_json['status'] = true;
+		}
 		break;
 	
 	default:
 		$res_json['info'] = 'Type未命中';
 		break;
 }
+
 echo json_encode($res_json);
