@@ -27,7 +27,7 @@ class Db
 
 		$con_str = sprintf("mysql:host=%s;dbname=%s",$host, $dbname);
 
-		$this->db = new PDO("",$dbuser, $dbpwd);
+		$this->db = new PDO($con_str,$dbuser, $dbpwd);
 		$this->db->exec("SET NAMES 'utf8';");
 	}
 }
