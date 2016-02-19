@@ -3,18 +3,23 @@
   "name": "知乎追踪器",
   "description": "你们给我搞的这个追踪器啊，亦可赛艇",
   "version": "1.0",
+  "background": { "scripts": ["./js/background.js"] },
   "content_scripts": [{
-     "matches": ["https://www.zhihu.com/*"], 
+     "matches": ["*://www.zhihu.com/*"], 
      "js": ["jquery.min.js","operation.js"],
      "css": ["css/page.css"],
      "run_at": "document_end",
      "all_frames": true
    }],
   "permissions": [
-    "storage"
+    "storage",
+    "background"
   ],
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "pop.html"
-  }
+  },
+"externally_connectable": {
+   "matches": ["*://www.zhihu.com/*"]
+ }
 }

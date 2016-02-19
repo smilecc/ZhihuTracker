@@ -74,6 +74,17 @@ class Track extends Db
 		return $insert->execute();
 	}
 
+	public function RemoveTrack($uid,$question_id,$answer_id){
+		$delete = $this->db->prepare('DELETE FROM zh_track WHERE(userid=:uid AND questionid=:qid AND answerid=:aid)');
+		$delete->bindParam(':qid', $question_id);
+		$delete->bindParam(':aid', $answer_id);
+		$delete->bindParam(':uid', $uid);
+		
+		if($delete->execute()){
+			return $delete->rowCount();
+		} else return false;
+	}
+
 	public function GetAll($uid){
 		$stmt = $this->db->prepare('SELECT * FROM zh_track WHERE userid = :uid');
 		$stmt->execute(array('uid' => $uid));

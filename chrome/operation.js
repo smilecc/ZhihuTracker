@@ -1,8 +1,4 @@
-/*
-<button class="down pressed" title="在追踪器内追踪本回答更新">
-追踪
-</button>
-*/
+
 window.onload=function(){
 	//$('.zm-votebar').append('<button class="down pressed" title="在追踪器内追踪本回答更新">追踪</button>');
 	var url = window.location.pathname;
@@ -23,30 +19,36 @@ window.onload=function(){
 		view_mode = 1;
 	}
 
+	var SetPage = function(){
+		// 追加按钮
+		var votelist = document.getElementsByClassName('zm-votebar');//.appendChild(btn_tracker);
+		for (var i = votelist.length - 1; i >= 0; i--) {
+			var btn_tracker = document.createElement('button');
+			btn_tracker.setAttribute('class','tracker');
+			btn_tracker.setAttribute('title','在追踪器内追踪本回答更新');
+			if(view_mode == 0){
+				question_id = $(votelist[1]).parent().parent().parent().parent().children('[itemprop=question-url-token]').attr('content');
+			}
 
-	// 追加按钮
-	var votelist = document.getElementsByClassName('zm-votebar');//.appendChild(btn_tracker);
-	for (var i = votelist.length - 1; i >= 0; i--) {
-		var btn_tracker = document.createElement('button');
-		btn_tracker.setAttribute('class','tracker');
-		btn_tracker.setAttribute('title','在追踪器内追踪本回答更新');
-		if(view_mode == 0){
-			question_id = $(votelist[1]).parent().parent().parent().parent().children('[itemprop=question-url-token]').attr('content');
-		}
+			btn_tracker.setAttribute('answer_id',$(votelist[1]).parent().attr('data-atoken'));
+			btn_tracker.setAttribute('question_id',question_id);
+			btn_tracker.innerHTML = '追踪';
+			votelist[i].appendChild(btn_tracker);
+		};
 
-		btn_tracker.setAttribute('answer_id',$(votelist[1]).parent().attr('data-atoken'));
-		btn_tracker.setAttribute('question_id',question_id);
-		btn_tracker.innerHTML = '追踪';
-		votelist[i].appendChild(btn_tracker);
+		// 绑定事件
+		$('.tracker').click(function(){
+			if($(this).hasClass('pressed')){
+				$(this).removeClass('pressed');
+				TrackOp('removetrack');
+			} else {
+				$(this).addClass('pressed');
+				TrackOp('addtrack');
+			}
+			
+		});
 	};
 
-	// 绑定事件
-	$('.tracker').click(function(){
-		if($(this).hasClass('pressed')){
-			$(this).removeClass('pressed');
-		} else {
-			$(this).addClass('pressed');
-		}
-		
-	});
+	chrome.runtime.sendMessage({dom: d}); 
+	//TrackOp('gettrack');
 }

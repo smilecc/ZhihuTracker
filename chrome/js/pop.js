@@ -4,9 +4,11 @@ function AddRow(title,qid,aid,time){
 }
 
 function refresh(){
+	$('#list-body').text('');
+	$('#icon-refresh').addClass('fa-spin');
 	var track_str;
 	$.ajax({
-		url:"http://localhost/ZhihuTracker/operator.php",
+		url:"http://3.candemo.applinzi.com/operator.php",
 		async:true,
 		data:{
 			type:'gettrack',
@@ -19,11 +21,13 @@ function refresh(){
 				var row = jobj[i];
 				AddRow('title',row['questionid'],row['answerid'],row['checktime']);
 			};
+			$('#icon-refresh').removeClass('fa-spin');
 		}
 	});
 }
 
 $(function(){
+	refresh();
 	$('#btn-refresh').click(function(){
 		refresh();
 	});

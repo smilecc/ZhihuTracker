@@ -32,6 +32,19 @@ switch (@I('type')) {
 			$res_json['status'] = true;
 		}
 		break;
+	case 'removetrack':
+		$pQuestionid = @I('qid');
+		$pAnswerid = @I('aid');
+
+		if($pAnswerid == null || $pQuestionid == null){
+			$res_json['info'] = 'Aid or Qid 未命中';
+			break;
+		}
+
+		if($track->RemoveTrack($uid,$pQuestionid,$pAnswerid) > 0){
+			$res_json['status'] = true;
+		}
+		break;
 	case 'gettrack':
 		$res_json = $track->GetAll($uid);
 		break;
