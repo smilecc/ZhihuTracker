@@ -31,7 +31,14 @@ switch (@I('type')) {
 			$res_json['status'] = true;
 		}
 		break;
-	
+	case 'gettrack':
+		$res_json = $track->GetAll($uid);
+		break;
+	// 完成一次检查 更新时间
+	case 'overcheck':
+		$track->UpdateTime($uid);
+		$res_json['status'] = true;
+		break;
 	default:
 		$res_json['info'] = 'Type未命中';
 		break;

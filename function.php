@@ -57,4 +57,15 @@ class Track extends Db
 		$insert->bindParam(':uid', $uid);
 		return $insert->execute();
 	}
+
+	public function GetAll($uid){
+		$stmt = $this->db->prepare('SELECT * FROM track WHERE userid = :uid');
+		$stmt->execute(array('uid' => $uid));
+		return $stmt->fetchAll();
+	}
+
+	public function UpdateTime($uid){
+		$stmt = $this->db->prepare('UPDATE track SET num=num+1 WHERE userid = :uid');
+		$stmt->execute(array('uid' => $uid));
+	}
 }
