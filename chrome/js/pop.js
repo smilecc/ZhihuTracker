@@ -1,24 +1,30 @@
-$("#saveButton").bind("click",function(){
-	chrome.storage.sync.set({
-		'info': 	!$("#info").hasClass("toggle-off"),
-		"baozi":	!$("#baozi").hasClass("toggle-off"),
-		"redname":	!$("#redname").hasClass("toggle-off")},
-		function(){
-				console.log("保存完毕");
-				$("#saveButton").text("保存完毕");
-				$("#saveButton").addClass("btn-success");
-				setTimeout(function(){
-					$("#saveButton").text("保存设置");
-					$("#saveButton").removeClass("btn-success");
-				},800);
-			})
-});
-
-window.onload=function(){
-	chrome.storage.sync.get(["info","baozi","redname"],function(date){
-		console.log(date);
-		if(!date.info)		 $("#info").addClass("toggle-off");
-		if(!date.baozi)		 $("#baozi").addClass("toggle-off");
-		if(!date.redname)	 $("#redname").addClass("toggle-off");
-		})
+function AddRow(title,qid,aid,time){
+	 var row = '<tr><td><a href="https://www.zhihu.com/question/' + qid + '/answer/' + aid + '" target="_blank">' + title + '</a></td><td>'+ time +'</td></tr>';
+	$('#list-body').append(row);
 }
+
+function refresh(){
+	var track_str;
+	$.ajax({
+		url:"http://localhost/ZhihuTracker/operator.php",
+		async:true,
+		data:{
+			type:'gettrack',
+			uhash:'test2'
+		},
+		success:function(data){
+			track_str = data;
+			var jobj = JSON.parse(track_str);
+			for (var i = jobj.length - 1; i >= 0; i--) {
+				var row = jobj[i];
+				AddRow('title',row['questionid'],row['answerid'],row['checktime']);
+			};
+		}
+	});
+}
+
+$(function(){
+	$('#btn-refresh').click(function(){
+		refresh();
+	});
+});
