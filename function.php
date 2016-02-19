@@ -16,7 +16,7 @@ class Db
 		if(isset($_SERVER['HTTP_APPNAME'])){
 			$host = SAE_MYSQL_HOST_M;
 			$port = SAE_MYSQL_PORT;
-			$dbname = $_SERVER['HTTP_APPNAME'];
+			$dbname = 'app_'.$_SERVER['HTTP_APPNAME'];
 			$dbuser = SAE_MYSQL_USER;
 			$dbpwd = SAE_MYSQL_PASS;
 		}else{
