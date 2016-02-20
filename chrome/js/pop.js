@@ -5,7 +5,13 @@ function AddRow(title,qid,aid,time){
 //https://www.zhihu.com/question/40553432/answer/87119638
 
 function TimeParse(answertime,servertime){
+	console.log(servertime);
+	var stime = servertime.substring(11,19).split(':');
 	servertime = servertime.substring(0,10).split('-');
+	// 服务器时间戳
+	var utcStime = Date.UTC(servertime[0],servertime[1] - 1,servertime[2],stime[0],stime[1],stime[2]);
+	console.log('stime:' + utcStime);
+
 	// 解析为int
 	for (var i = 0; i >= 2; i++) {
 		servertime[i] = parseInt(servertime[i]);
@@ -13,34 +19,29 @@ function TimeParse(answertime,servertime){
 
 	answertime = answertime.split(' ');
 	// 为年份
+	console.log(answertime[1].substring(0,2));
 	if(answertime[1].substring(0,2) == '20' && answertime[1].substring(0,3) != '20:'){
 		var atime = answertime[1].split('-');
-		// 将答案内时间解析成字符串并比较
-		for (var i = 0; i >= 2; i++) {
-			atime[i] = parseInt(atime[i]);
+		var utcAtime = Date.UTC(atime[0],atime[1] - 1,atime[2]);
+		console.log('atime:' + utcAtime);
 
-			if(atime[i] > servertime[i]) return true;
-		};
-		return false;
+		if(utcAtime > utcStime) return true;
+		else return false;
+
 	} else {
-		var atime = answertime[1].split(' ');
 		var date = new Date();
-		var nowDay = date.getDay();
+		var nowDay = date.getDate();
 		var nowMonth = date.getMonth();
 		var nowYear = date.getFullYear();
 
-		if(atime[1] == '昨天'){
+		if(answertime[1] == '昨天'){
 			// 服务器时间为今天
-			var utcAtime = Date.UTC(nowYear,nowMonth,nowDay) - 86400000;
-			var utcStime = Date.UTC(servertime[0],servertime[1],servertime[2]);
+			var atime = answertime[2].split(':');
 
-			if(utcStime >= )
+			var utcAtime = Date.UTC(nowYear,nowMonth,nowDay,atime[0],atime[1]) - 86400000;
 
-			// if(nowYear == servertime[0] && nowMonth == servertime[1] && nowDay == servertime[2]){
-			// 	return false;
-			// }
-
-			// 服务器时间为昨天
+			if(utcAtime > utcStime) return true;
+			else return false;
 
 		} else {
 
@@ -49,7 +50,6 @@ function TimeParse(answertime,servertime){
 }
 
 function AnswerParse(data,servertime){
-
 	var regTitle = new RegExp("title>([\\s\\S]+)的回答 - 知乎</title");
 	var title = regTitle.exec(data);
 
@@ -72,6 +72,17 @@ function AnswerParse(data,servertime){
 	return res;
 }
 
+var answerGet = function(row){
+		$.ajax({
+			url:"https://www.zhihu.com/question/" + row['questionid'] + "/answer/" + row['answerid'],
+			async:true,
+			success:function(data){
+				var res = AnswerParse(data,row['checktime']);
+				AddRow(res.title,row['questionid'],row['answerid'],res.status);
+			}
+		});
+	};
+
 function refresh(){
 	$('#list-body').text('');
 	$('#icon-refresh').addClass('fa-spin');
@@ -87,19 +98,7 @@ function refresh(){
 			track_str = data;
 			var jobj = JSON.parse(track_str);
 			for (var i = jobj.length - 1; i >= 0; i--) {
-				var row = jobj[i];
-				$.ajax({
-					url:"https://www.zhihu.com/question/" + row['questionid'] + "/answer/" + row['answerid'],
-					async:true,
-					data:{
-						type:'gettrack',
-						uhash:localStorage['user_hash']
-					},
-					success:function(data){
-						var res = AnswerParse(data,row['checktime']);
-						AddRow(res.title,row['questionid'],row['answerid'],res.status);
-					}
-				});
+				answerGet(jobj[i]);
 			};
 			$('#icon-refresh').removeClass('fa-spin');
 		}
@@ -112,4 +111,5 @@ $(function(){
 	$('#btn-refresh').click(function(){
 		refresh();
 	});
+
 });
