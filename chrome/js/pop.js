@@ -107,12 +107,27 @@ function refresh(){
 	});
 }
 
+var version = '1.0';
+function CheckUpdate(){
+	$.ajax({
+		url:"http://canapi.sinaapp.com/vsapi.php?mode=select&uid=1&vsname=zhihutrack&res=version",
+		async:true,
+		success:function(data){
+			console.log('server_version: ' + data);
+			if(data > version){
+				$('.footerupdate').show();
+			}
+		}
+	});
+}
+
 $(function(){
 	if(chrome.extension.getBackgroundPage().user_hash == undefined){
 		$('.footerunlogin').show();
 		return;
 	}
 	localStorage['user_hash'] = chrome.extension.getBackgroundPage().user_hash;
+	CheckUpdate();
 
 	var TrackOp = chrome.extension.getBackgroundPage().TrackOp;
 	refresh();
