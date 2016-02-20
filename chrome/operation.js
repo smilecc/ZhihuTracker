@@ -7,7 +7,11 @@ window.onload=function(){
 	var people;
 
 	// 获取用户信息
-	var user_jobj = JSON.parse($('[data-name=ga_vars]').text())
+	var user_jobj = JSON.parse($('[data-name=ga_vars]').text());
+	if(user_jobj['user_hash'] == 0){
+		console.log('unlogin');
+		return;
+	}
 	window.localStorage.setItem('user_hash', user_jobj['user_hash']);
 
 	// 追踪操作
@@ -29,16 +33,20 @@ window.onload=function(){
 		view_mode = 1;
 	}
 
-	// 判断模式 标记已读
-	var answer_reg = new RegExp('answer/([0-9]+)').exec(url);
-	console.log(answer_reg);
-	if(null != answer_reg){
-		answer_id = answer_reg[1];
-		TrackOp('overonecheck',question_id,answer_id);
-	}
-
-
 	var SetPage = function(answerlist){
+		// 判断模式 标记已读
+		var answer_reg = new RegExp('answer/([0-9]+)').exec(url);
+		console.log(answer_reg);
+		if(null != answer_reg){
+			answer_id = answer_reg[1];
+			
+			if(answerlist.indexOf(answer_id) != -1){
+				console.log('send over check');
+				TrackOp('overonecheck',answer_id,question_id);
+			}
+			
+		}
+
 		// 追加按钮
 		var votelist = document.getElementsByClassName('zm-votebar');//.appendChild(btn_tracker);
 		for (var i = votelist.length - 1; i >= 0; i--) {

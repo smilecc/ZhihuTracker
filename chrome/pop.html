@@ -10,32 +10,65 @@
     	button,p,h1,h2,h3,h4,h5,h6,a,td,body,li,div,ol {
 		  font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', Arial, sans-serif;
 		}
-    	.header{
-    		margin-right: 5px;
-    		margin-top: 5px;
+		.footer{
+			margin-top: 10px;
+		}
+		.footeras{
+			margin-bottom: 10px;
+			margin-right: 10px;
+		}
+    	.footer a{
+			padding: 5px 10px;
+			text-decoration: none;
+    	}
+    	.footer a:hover{
+    		  background-color: #bbb;
+			  border-radius: 5px;
+			  color: #fff;
+    	}
+    	.tb{
+    		margin: 10px;
+    	}
+    	hr{
+			margin: 10px 0;
+			border-bottom: 2px solid #ccc;
+    	}
+    	.div-tb{
+    		overflow-y:scroll;
+    		overflow-x: hidden;
+    		height: 250px;
+    	}
+    	.footerleft{
+    		margin-left: 10px;
+    		color: red;
+    		font-weight: bold;
+    		display: none;
     	}
     	</style>
 	</head>
 	
 	<body style="width:800px;">
-		<div class="header">
-			<div class="pull-right">
+		<div class="div-tb">
+			<table class="table table-condensed tb">
+				<thead>
+					<tr>
+						<th>标题</th>
+						<th width="100px">状态</th>
+					</tr>
+				</thead>
+				<tbody id="list-body">
+
+				</tbody>
+			</table>
+		</div>
+		<hr/>
+		<div class="footer">
+			<div class="pull-left footerleft">未登录，请最少打开一次知乎，如果已经打开请在任意页面刷新</div>
+			<div class="pull-right footeras">
 				<a href="#" class="" id="btn-refresh"><i id="icon-refresh" class="fa fa-refresh"></i> 刷新</a>
 				<a href="#" class="" id="btn-overcheck"><i class="fa fa-check"></i> 全部设为已读</a>
 			</div>
 		</div>
-		<table class="table table-condensed">
-			<thead>
-				<tr>
-					<th>标题</th>
-					<th>状态</th>
-					<th>操作</th>
-				</tr>
-			</thead>
-			<tbody id="list-body">
-
-			</tbody>
-		</table>
 		<script type="text/javascript" src="jquery.min.js"></script>
 		<script type="text/javascript" src="./js/pop.js"></script>
 	</body>

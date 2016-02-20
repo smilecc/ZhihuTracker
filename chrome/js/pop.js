@@ -108,10 +108,22 @@ function refresh(){
 }
 
 $(function(){
+	if(chrome.extension.getBackgroundPage().user_hash == undefined){
+		$('.footerleft').show();
+		return;
+	}
 	localStorage['user_hash'] = chrome.extension.getBackgroundPage().user_hash;
+
+	var TrackOp = chrome.extension.getBackgroundPage().TrackOp;
 	refresh();
 	$('#btn-refresh').click(function(){
 		refresh();
+	});
+
+	$('#btn-overcheck').click(function(){
+		TrackOp('overallcheck','','',function(){
+			refresh();
+		});
 	});
 
 });
