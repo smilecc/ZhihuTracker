@@ -95,4 +95,14 @@ class Track extends Db
 		$stmt = $this->db->prepare('UPDATE zh_track SET num=num+1 WHERE userid = :uid');
 		$stmt->execute(array('uid' => $uid));
 	}
+
+	public function UpdateOneTime($uid,$question_id,$answer_id){
+		$stmt = $this->db->prepare('UPDATE zh_track SET num=num+1 WHERE(userid = :uid AND questionid = :qid AND answerid = :aid)');
+		return $stmt->execute(
+				array(
+					'uid' => $uid,
+					'qid' => $question_id,
+					'aid' => $answer_id
+			));
+	}
 }

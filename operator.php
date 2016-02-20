@@ -1,6 +1,7 @@
 <?php
 header("Content-type: text/html; charset=utf-8");
 header('Access-Control-Allow-Origin:*');
+ini_set("display_errors",1);
 require_once('function.php');
 
 $user = new User();
@@ -49,8 +50,20 @@ switch (@I('type')) {
 		$res_json = $track->GetAll($uid);
 		break;
 	// 完成一次检查 更新时间
-	case 'overcheck':
+	case 'overallcheck':
 		$track->UpdateTime($uid);
+		$res_json['status'] = true;
+		break;
+	case 'overonecheck':
+		$pQuestionid = @I('qid');
+		$pAnswerid = @I('aid');
+
+		if($pAnswerid == null || $pQuestionid == null){
+			$res_json['info'] = 'Aid or Qid 未命中';
+			break;
+		}
+
+		$track->UpdateOneTime($uid,$pQuestionid,$pAnswerid);
 		$res_json['status'] = true;
 		break;
 	default:
