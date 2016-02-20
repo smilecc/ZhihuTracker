@@ -109,7 +109,7 @@ function refresh(){
 
 $(function(){
 	if(chrome.extension.getBackgroundPage().user_hash == undefined){
-		$('.footerleft').show();
+		$('.footerunlogin').show();
 		return;
 	}
 	localStorage['user_hash'] = chrome.extension.getBackgroundPage().user_hash;
