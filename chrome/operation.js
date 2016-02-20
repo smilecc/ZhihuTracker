@@ -1,4 +1,3 @@
-
 window.onload=function(){
 	//$('.zm-votebar').append('<button class="down pressed" title="在追踪器内追踪本回答更新">追踪</button>');
 	var url = window.location.pathname;
@@ -9,7 +8,7 @@ window.onload=function(){
 
 	// 获取用户信息
 	var user_jobj = JSON.parse($('[data-name=ga_vars]').text())
-	var user_hash = user_jobj['user_hash'];
+	window.localStorage.setItem('user_hash', user_jobj['user_hash']);
 
 	// 初始化信息
 	var reg = new RegExp("question/([0-9]+)");
@@ -19,18 +18,27 @@ window.onload=function(){
 		view_mode = 1;
 	}
 
-	var SetPage = function(){
+	var SetPage = function(answerlist){
 		// 追加按钮
 		var votelist = document.getElementsByClassName('zm-votebar');//.appendChild(btn_tracker);
 		for (var i = votelist.length - 1; i >= 0; i--) {
 			var btn_tracker = document.createElement('button');
-			btn_tracker.setAttribute('class','tracker');
 			btn_tracker.setAttribute('title','在追踪器内追踪本回答更新');
 			if(view_mode == 0){
-				question_id = $(votelist[1]).parent().parent().parent().parent().children('[itemprop=question-url-token]').attr('content');
+				question_id = $(votelist[i]).parent().parent().parent().parent().children('[itemprop=question-url-token]').attr('content');
 			}
 
-			btn_tracker.setAttribute('answer_id',$(votelist[1]).parent().attr('data-atoken'));
+			var thisAnwerid = $(votelist[i]).parent().attr('data-atoken');
+			if(thisAnwerid === undefined){
+				continue;
+			}
+			console.log(thisAnwerid);
+			if(answerlist.indexOf(thisAnwerid) == -1){
+				btn_tracker.setAttribute('class','tracker');
+			} else {
+				btn_tracker.setAttribute('class','tracker pressed');
+			}
+			btn_tracker.setAttribute('answer_id',thisAnwerid);
 			btn_tracker.setAttribute('question_id',question_id);
 			btn_tracker.innerHTML = '追踪';
 			votelist[i].appendChild(btn_tracker);
@@ -38,27 +46,47 @@ window.onload=function(){
 
 		// 绑定事件
 		$('.tracker').click(function(){
+			var aid = $(this).attr('answer_id');
+			var qid = $(this).attr('question_id');
+
 			if($(this).hasClass('pressed')){
 				$(this).removeClass('pressed');
-				TrackOp('removetrack');
+				TrackOp('removetrack',aid,qid);
 			} else {
 				$(this).addClass('pressed');
-				TrackOp('addtrack');
+				TrackOp('addtrack',aid,qid);
 			}
 			
 		});
 	};
 
-	chrome.runtime.sendMessage(
-			{
+	// 获取追踪列表
+	chrome.runtime.sendMessage({
 				type: 'gettrack',
-				uhash: '',
+				uhash: localStorage['user_hash'],
 				aid: '',
 				qid: ''
 			},
 			function(response){
 				console.log(response.data);
-				SetPage();
-			}); 
+				var jobj = JSON.parse(response.data);
+				var answerlist = new Array();
+				for(x in jobj){ 
+					answerlist.push(jobj[x]['answerid']);
+				}
+				console.log(answerlist);
+				SetPage(answerlist);
+		});
+
+	var TrackOp = function(type,aid,qid){
+		chrome.runtime.sendMessage({
+					'type': type,
+					'uhash': localStorage['user_hash'],
+					'aid': aid,
+					'qid': qid
+				},
+				function(response){});
+	};
+
 	//TrackOp('gettrack');
 }

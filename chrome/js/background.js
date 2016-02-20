@@ -1,26 +1,11 @@
-// var TrackOp = function(type){
-// 	$.ajax({
-// 		url:"https://3.candemo.applinzi.com/operator.php",
-// 		async:true,
-// 		data:{
-// 			type:type,
-// 			uhash:user_hash,
-// 			qid:question_id,
-// 			aid:answer_id
-// 		},
-// 		success:function(data){
-// 			if(type == 'gettrack'){
-// 				SetPage();
-// 			}
-// 		}
-// 	});
-// };
+var user_hash = undefined;
 
 chrome.runtime.onMessage.addListener(  
 function(request, sender, sendResponse) {
+	user_hash = request.uhash;
 	$.ajax({
-		url:"https://3.candemo.applinzi.com/operator.php",
-		async:true,
+		url:"http://3.candemo.applinzi.com/operator.php",
+		async:false,
 		data:{
 			type:request.type,
 			uhash:request.uhash,
@@ -28,8 +13,9 @@ function(request, sender, sendResponse) {
 			aid:request.aid
 		},
 		success:function(res){
-			console.log(res);
-			sendResponse({data: res});
+			//console.log(res);
+			sendResponse({'data': res});
 		}
 	});
+	return true;
 });
