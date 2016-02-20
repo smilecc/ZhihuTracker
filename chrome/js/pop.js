@@ -35,16 +35,18 @@ function TimeParse(answertime,servertime){
 		var nowYear = date.getFullYear();
 
 		if(answertime[1] == '昨天'){
-			// 服务器时间为今天
 			var atime = answertime[2].split(':');
-
 			var utcAtime = Date.UTC(nowYear,nowMonth,nowDay,atime[0],atime[1]) - 86400000;
 
 			if(utcAtime > utcStime) return true;
 			else return false;
 
 		} else {
+			var atime = answertime[1].split(':');
+			var utcAtime = Date.UTC(nowYear,nowMonth,nowDay,atime[0],atime[1]);
 
+			if(utcAtime > utcStime) return true;
+			else return false;
 		}
 	}
 }
