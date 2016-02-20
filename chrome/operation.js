@@ -10,6 +10,17 @@ window.onload=function(){
 	var user_jobj = JSON.parse($('[data-name=ga_vars]').text())
 	window.localStorage.setItem('user_hash', user_jobj['user_hash']);
 
+	// 追踪操作
+	var TrackOp = function(type,aid,qid){
+		chrome.runtime.sendMessage({
+					'type': type,
+					'uhash': localStorage['user_hash'],
+					'aid': aid,
+					'qid': qid
+				},
+				function(response){console.log(response)});
+	};
+
 	// 初始化信息
 	var reg = new RegExp("question/([0-9]+)");
 	var question_reg = reg.exec(url);
@@ -17,6 +28,15 @@ window.onload=function(){
 		question_id = question_reg[1];
 		view_mode = 1;
 	}
+
+	// 判断模式 标记已读
+	var answer_reg = new RegExp('answer/([0-9]+)').exec(url);
+	console.log(answer_reg);
+	if(null != answer_reg){
+		answer_id = answer_reg[1];
+		TrackOp('overonecheck',question_id,answer_id);
+	}
+
 
 	var SetPage = function(answerlist){
 		// 追加按钮
@@ -32,7 +52,7 @@ window.onload=function(){
 			if(thisAnwerid === undefined){
 				continue;
 			}
-			console.log(thisAnwerid);
+
 			if(answerlist.indexOf(thisAnwerid) == -1){
 				btn_tracker.setAttribute('class','tracker');
 			} else {
@@ -77,16 +97,6 @@ window.onload=function(){
 				console.log(answerlist);
 				SetPage(answerlist);
 		});
-
-	var TrackOp = function(type,aid,qid){
-		chrome.runtime.sendMessage({
-					'type': type,
-					'uhash': localStorage['user_hash'],
-					'aid': aid,
-					'qid': qid
-				},
-				function(response){});
-	};
 
 	//TrackOp('gettrack');
 }
