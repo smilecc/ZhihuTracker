@@ -1,4 +1,4 @@
-var user_hash = undefined;
+var user_hash = localStorage['user_hash'];
 
 var TrackOp = function(type,aid,qid,successFunc){
 	$.ajax({
