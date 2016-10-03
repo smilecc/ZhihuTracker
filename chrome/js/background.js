@@ -2,7 +2,7 @@ var user_hash = localStorage['user_hash'];
 
 var TrackOp = function(type,aid,qid,successFunc){
 	$.ajax({
-			url:"http://3.candemo.applinzi.com/operator.php",
+			url:"http://zhihutracker.cuican.name/operator.php",
 			async:false,
 			data:{
 				type: type,

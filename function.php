@@ -13,19 +13,25 @@ class Db
 
 	function __construct()
 	{
-		if(isset($_SERVER['HTTP_APPNAME'])){
-			$host = SAE_MYSQL_HOST_M;
-			$port = SAE_MYSQL_PORT;
-			$dbname = 'app_'.$_SERVER['HTTP_APPNAME'];
-			$dbuser = SAE_MYSQL_USER;
-			$dbpwd = SAE_MYSQL_PASS;
-		}else{
-			$host = "db4free.net";
-			$port = 3306;
-			$dbname = "zhihutracker";
-			$dbuser = "zhihutracker";
-			$dbpwd = '123456';
-		}
+		// if(isset($_SERVER['HTTP_APPNAME'])){
+		// 	$host = SAE_MYSQL_HOST_M;
+		// 	$port = SAE_MYSQL_PORT;
+		// 	$dbname = 'app_'.$_SERVER['HTTP_APPNAME'];
+		// 	$dbuser = SAE_MYSQL_USER;
+		// 	$dbpwd = SAE_MYSQL_PASS;
+		// }else{
+		// 	$host = "db4free.net";
+		// 	$port = 3306;
+		// 	$dbname = "zhihutracker";
+		// 	$dbuser = "zhihutracker";
+		// 	$dbpwd = '123456';
+		// }
+
+		$host = "localhost";
+		$port = 3306;
+		$dbname = "zhihutracker";
+		$dbuser = "zhihutracker";
+		$dbpwd = 'sxcuic';
 
 		$con_str = sprintf("mysql:host=%s;port=%d;dbname=%s",$host,$port,$dbname);
 

@@ -55,10 +55,11 @@ function AnswerParse(data,servertime){
 	var regTitle = new RegExp("title>([\\s\\S]+)的回答 - 知乎</title");
 	var title = regTitle.exec(data);
 
-	var regTime = new RegExp('answer-date-link-wrap">([\\s\\S]+?)</span>');
+	var regTime = new RegExp('answer-date-link([\\s\\S]+?)a>');
 	var time = regTime.exec(data);
+	console.log(time);
 	var regTime = new RegExp('">([\\s\\S]+?)</a');
-	var time = regTime.exec(time[1]);
+	var time = regTime.exec(time[0]);
 	
 	var status;
 	if(TimeParse(time[1],servertime)){
@@ -90,7 +91,7 @@ function refresh(){
 	$('#icon-refresh').addClass('fa-spin');
 	var track_str;
 	$.ajax({
-		url:"http://3.candemo.applinzi.com/operator.php",
+		url:"http://zhihutracker.cuican.name/operator.php",
 		async:true,
 		data:{
 			type:'gettrack',
@@ -107,10 +108,10 @@ function refresh(){
 	});
 }
 
-var version = '1.0';
+var version = '1.2';
 function CheckUpdate(){
 	$.ajax({
-		url:"http://canapi.sinaapp.com/vsapi.php?mode=select&uid=1&vsname=zhihutrack&res=version",
+		url:"http://zhihutracker.cuican.name/version.php",
 		async:true,
 		success:function(data){
 			console.log('server_version: ' + data);
